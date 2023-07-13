@@ -23,6 +23,8 @@ class ComplaintAdmin(admin.ModelAdmin):
 
 
 class OwnerAdmin(admin.ModelAdmin):
+    search_fields = ('name', 'phonenumber', 'pure_phone', 'flats')
+    list_display = ('name', 'phonenumber', 'pure_phone')
     raw_id_fields = ['flats']
 
 
