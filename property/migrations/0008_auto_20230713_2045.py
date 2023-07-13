@@ -9,10 +9,20 @@ def normalize_phonenumber(apps, schema_editor):
     for flat in Flat.objects.all():
         try:
             phonenumber = phonenumbers.parse(flat.owners_phonenumber, 'RU')
-            formatted_number = phonenumbers.format_number(phonenumber, phonenumbers.PhoneNumberFormat.E164)
+            if phonenumbers.is_valid_number(phonenumber):
+                formatted_number = phonenumbers.format_number(phonenumber, phonenumbers.PhoneNumberFormat.E164)
+            else:
+                formatted_number = None
         except (phonenumbers.NumberParseException, AttributeError):
-            formatted_number = None
+            continue
         flat.owner_pure_phone = formatted_number
+        flat.save()
+
+
+def move_backward(apps, schema_editor):
+    Flat = apps.get_model('property', 'Flat')
+    for flat in Flat.objects.all():
+        flat.owner_pure_phone = None
         flat.save()
 
 
@@ -23,5 +33,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(normalize_phonenumber)
+        migrations.RunPython(normalize_phonenumber, move_backward)
     ]
