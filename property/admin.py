@@ -25,6 +25,7 @@ class FlatAdmin(admin.ModelAdmin):
 
 
 class ComplaintAdmin(admin.ModelAdmin):
+    list_display = ('flat', 'author')
     raw_id_fields = ('author', 'flat')
 
 
